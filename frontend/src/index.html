@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Streaming Platform</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/movies.css">
+    <link rel="stylesheet" href="css/player.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <h1 class="logo">🎬 Movie Streaming</h1>
+            <div class="search-container">
+                <input 
+                    type="text" 
+                    id="searchInput" 
+                    class="search-input" 
+                    placeholder="Search movies..."
+                >
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="container">
+            <!-- Player Section (hidden by default) -->
+            <section id="playerSection" class="player-section" style="display: none;">
+                <button id="backButton" class="back-button">← Back to Movies</button>
+                <div class="player-container">
+                    <video id="videoPlayer" class="video-player" controls>
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="movie-info">
+                    <h2 id="currentMovieTitle"></h2>
+                    <p id="currentMovieYear"></p>
+                </div>
+            </section>
+
+            <!-- Movies List Section -->
+            <section id="moviesSection" class="movies-section">
+                <div class="section-header">
+                    <h2 id="sectionTitle">All Movies</h2>
+                    <span id="movieCount" class="movie-count"></span>
+                </div>
+                
+                <div id="loadingSpinner" class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Loading movies...</p>
+                </div>
+
+                <div id="errorMessage" class="error-message" style="display: none;">
+                    <p>Failed to load movies. Please try again.</p>
+                </div>
+
+                <div id="moviesList" class="movies-grid"></div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Movie Streaming Platform. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script type="module" src="js/app.js"></script>
+</body>
+</html>

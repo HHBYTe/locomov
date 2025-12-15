@@ -1,0 +1,32 @@
+version: '3.8'
+
+services:
+  backend:
+    build: ./backend
+    container_name: movie_backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./media:/app/media:ro
+      - ./backend/app:/app/app
+    environment:
+      - MEDIA_PATH=/app/media/movies
+      - CORS_ORIGINS=http://localhost,http://192.168.1.100
+    restart: unless-stopped
+    networks:
+      - movie_network
+
+  frontend:
+    build: ./frontend
+    container_name: movie_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    networks:
+      - movie_network
+
+networks:
+  movie_network:
+    driver: bridge
