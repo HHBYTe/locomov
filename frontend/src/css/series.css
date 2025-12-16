@@ -1,0 +1,92 @@
+/* Series Episodes Section */
+.episodes-section {
+    min-height: 400px;
+}
+
+.series-header {
+    margin-bottom: 2rem;
+}
+
+.series-header h2 {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.series-header p {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+}
+
+/* Seasons Container */
+.seasons-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.season-block {
+    background-color: var(--card-background);
+    border-radius: var(--border-radius);
+    padding: 1.5rem;
+}
+
+.season-header {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--primary-color);
+}
+
+.episodes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.episode-card {
+    background-color: var(--secondary-color);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    cursor: pointer;
+    transition: var(--transition);
+    border: 2px solid transparent;
+}
+
+.episode-card:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+}
+
+.episode-number {
+    font-size: 0.9rem;
+    color: var(--primary-color);
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.episode-title {
+    font-size: 1rem;
+    color: var(--text-color);
+    margin-bottom: 0.25rem;
+}
+
+.episode-subtitle-indicator {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .episodes-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    }
+    
+    .season-block {
+        padding: 1rem;
+    }
+    
+    .season-header {
+        font-size: 1.2rem;
+    }
+}
