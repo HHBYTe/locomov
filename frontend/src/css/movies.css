@@ -1,14 +1,14 @@
-.movies-section {
+.content-section {
     min-height: 400px;
 }
 
-.movies-grid {
+.items-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
     gap: 2rem;
 }
 
-.movie-card {
+.item-card {
     background-color: var(--card-background);
     border-radius: var(--border-radius);
     overflow: hidden;
@@ -17,16 +17,16 @@
     position: relative;
 }
 
-.movie-card:hover {
+.item-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
 }
 
-.movie-card:hover .movie-overlay {
+.item-card:hover .item-overlay {
     opacity: 1;
 }
 
-.movie-thumbnail {
+.item-thumbnail {
     width: 100%;
     aspect-ratio: 16/9;
     background: linear-gradient(135deg, var(--secondary-color) 0%, var(--card-background) 100%);
@@ -37,7 +37,7 @@
     position: relative;
 }
 
-.movie-overlay {
+.item-overlay {
     position: absolute;
     top: 0;
     left: 0;
@@ -55,23 +55,23 @@
     font-size: 4rem;
 }
 
-.movie-details {
+.item-details {
     padding: 1.5rem;
 }
 
-.movie-title {
+.item-title {
     font-size: 1.2rem;
     font-weight: 600;
     margin-bottom: 0.5rem;
     color: var(--text-color);
 }
 
-.movie-year {
+.item-year {
     color: var(--text-secondary);
     font-size: 0.9rem;
 }
 
-.movie-meta {
+.item-meta {
     display: flex;
     gap: 1rem;
     margin-top: 0.5rem;
@@ -102,29 +102,29 @@
 
 /* Responsive */
 @media (max-width: 1200px) {
-    .movies-grid {
+    .items-grid {
         grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 1.5rem;
     }
 }
 
 @media (max-width: 768px) {
-    .movies-grid {
+    .items-grid {
         grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
         gap: 1rem;
     }
     
-    .movie-details {
+    .item-details {
         padding: 1rem;
     }
     
-    .movie-title {
+    .item-title {
         font-size: 1rem;
     }
 }
 
 @media (max-width: 480px) {
-    .movies-grid {
+    .items-grid {
         grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
     }
 }
