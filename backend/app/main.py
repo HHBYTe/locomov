@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.api.routes import movies, stream
+from app.api.routes import movies, series, stream
 
 app = FastAPI(
     title=settings.PROJECT_NAME,
@@ -19,6 +19,7 @@ app.add_middleware(
 
 # Include routers
 app.include_router(movies.router, prefix=f"{settings.API_PREFIX}/movies", tags=["movies"])
+app.include_router(series.router, prefix=f"{settings.API_PREFIX}/series", tags=["series"])
 app.include_router(stream.router, prefix=f"{settings.API_PREFIX}/stream", tags=["stream"])
 
 @app.get("/")
