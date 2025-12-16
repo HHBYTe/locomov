@@ -3,22 +3,23 @@ import re
 from typing import List, Optional
 from pathlib import Path
 from app.config import settings
-from app.models.movie import Movie
+from app.models.movie import Movie, Subtitle
 
 class MovieService:
     def __init__(self):
-        self.media_path = Path(settings.MEDIA_PATH)
+        self.movies_path = Path(settings.MOVIES_PATH)
     
     def scan_movies(self) -> List[Movie]:
-        """Scan the media directory and return list of movies"""
+        """Scan the movies directory and return list of movies"""
         movies = []
         
-        if not self.media_path.exists():
+        if not self.movies_path.exists():
             return movies
         
-        for file_path in self.media_path.iterdir():
-            if file_path.is_file() and file_path.suffix.lower() in settings.SUPPORTED_FORMATS:
-                movie = self._create_movie_from_file(file_path)
+        # Each movie is in its own folder
+        for movie_folder in self.movies_path.iterdir():
+            if movie_folder.is_dir():
+                movie = self._create_movie_from_folder(movie_folder)
                 if movie:
                     movies.append(movie)
         
@@ -26,29 +27,79 @@ class MovieService:
         movies.sort(key=lambda x: x.title.lower())
         return movies
     
-    def _create_movie_from_file(self, file_path: Path) -> Optional[Movie]:
-        """Create a Movie object from a file"""
+    def _create_movie_from_folder(self, folder_path: Path) -> Optional[Movie]:
+        """Create a Movie object from a folder"""
         try:
-            filename = file_path.name
-            title, year = self._parse_filename(filename)
+            # Find the video file in the folder
+            video_file = None
+            for file in folder_path.iterdir():
+                if file.is_file() and file.suffix.lower() in settings.SUPPORTED_VIDEO_FORMATS:
+                    video_file = file
+                    break
+            
+            if not video_file:
+                return None
+            
+            # Parse title and year from folder name
+            folder_name = folder_path.name
+            title, year = self._parse_name(folder_name)
+            
+            # Find subtitles
+            subtitles = self._find_subtitles(folder_path)
             
             return Movie(
-                id=self._generate_id(filename),
+                id=self._generate_id(folder_name),
                 title=title,
                 year=year,
-                filename=filename,
-                file_path=str(file_path),
-                size=file_path.stat().st_size
+                folder_name=folder_name,
+                file_path=str(video_file),
+                size=video_file.stat().st_size,
+                subtitles=subtitles
             )
         except Exception as e:
-            print(f"Error processing file {file_path}: {e}")
+            print(f"Error processing folder {folder_path}: {e}")
             return None
     
-    def _parse_filename(self, filename: str) -> tuple[str, Optional[str]]:
-        """Parse movie title and year from filename"""
-        # Remove extension
-        name = Path(filename).stem
+    def _find_subtitles(self, folder_path: Path) -> List[Subtitle]:
+        """Find all subtitle files in a folder"""
+        subtitles = []
         
+        for file in folder_path.iterdir():
+            if file.is_file() and file.suffix.lower() in settings.SUPPORTED_SUBTITLE_FORMATS:
+                language = self._extract_language(file.stem)
+                subtitles.append(Subtitle(
+                    language=language,
+                    file_path=str(file),
+                    filename=file.name
+                ))
+        
+        return subtitles
+    
+    def _extract_language(self, filename: str) -> str:
+        """Extract language code from filename (e.g., 'movie.en.srt' -> 'en')"""
+        # Common patterns: movie.en.srt, movie.eng.srt, movie_english.srt
+        lang_patterns = [
+            r'\.([a-z]{2,3})$',  # .en, .eng
+            r'[\._]([a-z]{2,3})[\._]',  # _en_, .en.
+            r'[\._](english|spanish|french|german|italian)$'
+        ]
+        
+        filename_lower = filename.lower()
+        for pattern in lang_patterns:
+            match = re.search(pattern, filename_lower)
+            if match:
+                lang = match.group(1)
+                # Map full names to codes
+                lang_map = {
+                    'english': 'en', 'spanish': 'es', 'french': 'fr',
+                    'german': 'de', 'italian': 'it'
+                }
+                return lang_map.get(lang, lang)
+        
+        return 'unknown'
+    
+    def _parse_name(self, name: str) -> tuple[str, Optional[str]]:
+        """Parse title and year from folder/file name"""
         # Try to extract year in parentheses
         year_match = re.search(r'\((\d{4})\)', name)
         year = year_match.group(1) if year_match else None
@@ -67,9 +118,9 @@ class MovieService:
         
         return title, year
     
-    def _generate_id(self, filename: str) -> str:
-        """Generate a unique ID from filename"""
-        return re.sub(r'[^a-zA-Z0-9]', '_', Path(filename).stem).lower()
+    def _generate_id(self, name: str) -> str:
+        """Generate a unique ID from name"""
+        return re.sub(r'[^a-zA-Z0-9]', '_', name).lower()
     
     def get_movie_by_id(self, movie_id: str) -> Optional[Movie]:
         """Get a specific movie by ID"""
