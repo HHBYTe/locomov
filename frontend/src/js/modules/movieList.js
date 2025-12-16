@@ -4,10 +4,10 @@ export class MovieList {
     constructor(api) {
         this.api = api;
         this.container = document.getElementById('moviesList');
-        this.loadingSpinner = document.getElementById('loadingSpinner');
-        this.errorMessage = document.getElementById('errorMessage');
-        this.sectionTitle = document.getElementById('sectionTitle');
-        this.movieCount = document.getElementById('movieCount');
+        this.loadingSpinner = document.getElementById('moviesLoadingSpinner');
+        this.errorMessage = document.getElementById('moviesErrorMessage');
+        this.sectionTitle = document.getElementById('moviesSectionTitle');
+        this.movieCount = document.getElementById('moviesCount');
         this.moviesSection = document.getElementById('moviesSection');
         
         this.onMovieSelectCallback = null;
@@ -56,18 +56,23 @@ export class MovieList {
     }
     
     createMovieCard(movie) {
-        const card = createElement('div', { className: 'movie-card' });
+        const card = createElement('div', { className: 'item-card' });
+        
+        const subtitleIndicator = movie.subtitles && movie.subtitles.length > 0 
+            ? `<div class="item-meta"><span>📄 ${movie.subtitles.length} subtitle${movie.subtitles.length !== 1 ? 's' : ''}</span></div>`
+            : '';
         
         card.innerHTML = `
-            <div class="movie-thumbnail">
+            <div class="item-thumbnail">
                 🎬
-                <div class="movie-overlay">
+                <div class="item-overlay">
                     <span class="play-icon">▶</span>
                 </div>
             </div>
-            <div class="movie-details">
-                <h3 class="movie-title">${this.escapeHtml(movie.title)}</h3>
-                ${movie.year ? `<p class="movie-year">${movie.year}</p>` : ''}
+            <div class="item-details">
+                <h3 class="item-title">${this.escapeHtml(movie.title)}</h3>
+                ${movie.year ? `<p class="item-year">${movie.year}</p>` : ''}
+                ${subtitleIndicator}
             </div>
         `;
         
