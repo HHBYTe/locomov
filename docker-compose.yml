@@ -10,8 +10,9 @@ services:
       - ./media:/app/media:ro
       - ./backend/app:/app/app
     environment:
-      - MEDIA_PATH=/app/media/movies
-      - CORS_ORIGINS=http://localhost,http://192.168.1.215,http://locomov.com
+      - MOVIES_PATH=/app/media/movies
+      - SERIES_PATH=/app/media/series
+      - CORS_ORIGINS=http://localhost,http://192.168.1.215
     restart: unless-stopped
     networks:
       - movie_network
