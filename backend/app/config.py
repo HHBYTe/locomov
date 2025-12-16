@@ -7,8 +7,10 @@ class Settings:
     API_PREFIX: str = "/api"
     
     # Media settings
-    MEDIA_PATH: str = os.getenv("MEDIA_PATH", "/app/media/movies")
-    SUPPORTED_FORMATS: List[str] = [".mp4", ".mkv", ".avi", ".mov", ".webm"]
+    MOVIES_PATH: str = os.getenv("MOVIES_PATH", "/app/media/movies")
+    SERIES_PATH: str = os.getenv("SERIES_PATH", "/app/media/series")
+    SUPPORTED_VIDEO_FORMATS: List[str] = [".mp4", ".mkv", ".avi", ".mov", ".webm"]
+    SUPPORTED_SUBTITLE_FORMATS: List[str] = [".srt", ".vtt", ".ass", ".ssa"]
     
     # CORS
     CORS_ORIGINS: List[str] = os.getenv("CORS_ORIGINS", "http://localhost").split(",")
