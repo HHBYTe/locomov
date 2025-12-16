@@ -3,21 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie Streaming Platform</title>
+    <title>Movie & Series Streaming Platform</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/movies.css">
+    <link rel="stylesheet" href="css/series.css">
     <link rel="stylesheet" href="css/player.css">
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <h1 class="logo">🎬 Movie Streaming</h1>
+            <h1 class="logo">🎬 Streaming Platform</h1>
+            <nav class="nav-tabs">
+                <button id="moviesTab" class="nav-tab active">Movies</button>
+                <button id="seriesTab" class="nav-tab">Series</button>
+            </nav>
             <div class="search-container">
                 <input 
                     type="text" 
                     id="searchInput" 
                     class="search-input" 
-                    placeholder="Search movies..."
+                    placeholder="Search..."
                 >
             </div>
         </div>
@@ -27,42 +32,71 @@
         <div class="container">
             <!-- Player Section (hidden by default) -->
             <section id="playerSection" class="player-section" style="display: none;">
-                <button id="backButton" class="back-button">← Back to Movies</button>
+                <button id="backButton" class="back-button">← Back</button>
                 <div class="player-container">
-                    <video id="videoPlayer" class="video-player" controls>
+                    <video id="videoPlayer" class="video-player" controls crossorigin="anonymous">
                         Your browser does not support the video tag.
                     </video>
                 </div>
                 <div class="movie-info">
-                    <h2 id="currentMovieTitle"></h2>
-                    <p id="currentMovieYear"></p>
+                    <h2 id="currentTitle"></h2>
+                    <p id="currentMeta"></p>
                 </div>
             </section>
 
+            <!-- Series Episodes Section (hidden by default) -->
+            <section id="episodesSection" class="episodes-section" style="display: none;">
+                <button id="backToSeriesButton" class="back-button">← Back to Series</button>
+                <div class="series-header">
+                    <h2 id="seriesTitle"></h2>
+                    <p id="seriesYear"></p>
+                </div>
+                <div id="seasonsContainer" class="seasons-container"></div>
+            </section>
+
             <!-- Movies List Section -->
-            <section id="moviesSection" class="movies-section">
+            <section id="moviesSection" class="content-section">
                 <div class="section-header">
-                    <h2 id="sectionTitle">All Movies</h2>
-                    <span id="movieCount" class="movie-count"></span>
+                    <h2 id="moviesSectionTitle">All Movies</h2>
+                    <span id="moviesCount" class="item-count"></span>
                 </div>
                 
-                <div id="loadingSpinner" class="loading-spinner">
+                <div id="moviesLoadingSpinner" class="loading-spinner">
                     <div class="spinner"></div>
                     <p>Loading movies...</p>
                 </div>
 
-                <div id="errorMessage" class="error-message" style="display: none;">
+                <div id="moviesErrorMessage" class="error-message" style="display: none;">
                     <p>Failed to load movies. Please try again.</p>
                 </div>
 
-                <div id="moviesList" class="movies-grid"></div>
+                <div id="moviesList" class="items-grid"></div>
+            </section>
+
+            <!-- Series List Section -->
+            <section id="seriesSection" class="content-section" style="display: none;">
+                <div class="section-header">
+                    <h2 id="seriesSectionTitle">All Series</h2>
+                    <span id="seriesCount" class="item-count"></span>
+                </div>
+                
+                <div id="seriesLoadingSpinner" class="loading-spinner">
+                    <div class="spinner"></div>
+                    <p>Loading series...</p>
+                </div>
+
+                <div id="seriesErrorMessage" class="error-message" style="display: none;">
+                    <p>Failed to load series. Please try again.</p>
+                </div>
+
+                <div id="seriesList" class="items-grid"></div>
             </section>
         </div>
     </main>
 
     <footer class="footer">
         <div class="container">
-            <p>&copy; 2024 Movie Streaming Platform. All rights reserved.</p>
+            <p>&copy; 2024 Streaming Platform. All rights reserved.</p>
         </div>
     </footer>
 
