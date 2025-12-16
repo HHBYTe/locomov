@@ -1,42 +1,86 @@
-# Movie Streaming Platform
+# Movie & Series Streaming Platform
 
-A modular, Docker-based movie streaming platform with a Python backend and modern HTML/JS frontend.
+A modular, Docker-based streaming platform supporting both movies and TV series with subtitle support.
 
 ## Features
 
-- Alphabetically sorted movie list
-- Search functionality
-- Video streaming with HTML5 player
-- Responsive design
-- Docker containerization
+- 🎬 Movies and 📺 Series support
+- 📄 Subtitle support (SRT, VTT, ASS, SSA)
+- 🔍 Search functionality
+- 📱 Responsive design
+- 🎯 Season and episode organization
+- 🐳 Docker containerization
 
 ## Quick Start
 
-1. Place your movie files in `media/movies/`
-2. Build and start containers:
+1. **Organize your media files** (see structure below)
+2. **Build and start containers:**
    ```bash
    docker-compose up -d
    ```
-3. Access the platform at `http://localhost`
+3. **Access the platform at** `http://localhost`
 
-## Development
+## Media Folder Structure
 
-### Prerequisites
-- Docker & Docker Compose
-- Your movie files in MP4 format
+### Movies
+Each movie should be in its own folder with the video file and optional subtitles:
 
-### Project Structure
 ```
-├── frontend/          # HTML, CSS, JS
-├── backend/           # Python FastAPI backend
-├── media/movies/      # Your movie files
-└── docker-compose.yml
+media/movies/
+├── The_Matrix_(1999)/
+│   ├── The_Matrix_(1999).mp4
+│   ├── The_Matrix_(1999).en.srt
+│   └── The_Matrix_(1999).es.srt
+├── Inception_(2010)/
+│   ├── Inception_(2010).mkv
+│   └── Inception_(2010).en.srt
+└── Interstellar_(2014)/
+    └── Interstellar_(2014).mp4
 ```
 
-### Stopping the Application
-```bash
-docker-compose down
+### Series
+Each series should be in its own folder with season folders containing episodes:
+
 ```
+media/series/
+├── Breaking_Bad_(2008)/
+│   ├── Season 1/
+│   │   ├── S01E01.mp4
+│   │   ├── S01E01.en.srt
+│   │   ├── S01E02.mp4
+│   │   └── S01E02.en.srt
+│   └── Season 2/
+│       ├── S02E01.mp4
+│       └── S02E02.mp4
+└── The_Office_(2005)/
+    ├── S01/
+    │   ├── Episode_01.mkv
+    │   └── Episode_02.mkv
+    └── S02/
+        └── Episode_01.mkv
+```
+
+**Note:** Season folders can be named as:
+- `Season 1`, `Season 2`, etc.
+- `S01`, `S02`, etc.
+- `1`, `2`, etc.
+
+## Supported Formats
+
+**Video:** MP4, MKV, AVI, MOV, WEBM  
+**Subtitles:** SRT, VTT, ASS, SSA
+
+## File Naming Conventions
+
+### Movies
+- Folder name: `Movie_Title_(Year)` (year optional)
+- Video file: Any supported format
+- Subtitles: `filename.LANG.srt` (e.g., `movie.en.srt`, `movie.es.srt`)
+
+### Series
+- Series folder: `Series_Name_(Year)` (year optional)
+- Episodes: Should contain `E##` or `Episode ##` in filename
+- Subtitles: Match episode filename pattern
 
 ## Configuration
 
@@ -45,17 +89,49 @@ Edit `docker-compose.yml` to change:
 - CORS origins
 - Volume mounts
 
-## Movie File Naming
+## Development
 
-Name your files like: `Movie_Title_(Year).mp4`
-Example: `The_Matrix_(1999).mp4`
+### Prerequisites
+- Docker & Docker Compose
+- Your media files organized as described above
 
-## Logs
+### Project Structure
+```
+├── frontend/          # HTML, CSS, JS
+├── backend/           # Python FastAPI backend
+├── media/
+│   ├── movies/       # Movie folders
+│   └── series/       # Series folders
+└── docker-compose.yml
+```
 
-View logs with:
+### Stopping the Application
+```bash
+docker-compose down
+```
+
+### View Logs
 ```bash
 docker-compose logs -f
 ```
+
+## API Documentation
+
+Once running, access the API docs at:
+- Swagger UI: `http://localhost:8000/docs`
+- ReDoc: `http://localhost:8000/redoc`
+
+## Troubleshooting
+
+**Movies/Series not showing up?**
+- Check folder structure matches examples above
+- Ensure video files have supported extensions
+- Check docker logs: `docker-compose logs backend`
+
+**Subtitles not loading?**
+- Ensure subtitle files are in the same folder as video
+- Check subtitle language codes in filename
+- VTT format works best for web playback
 
 ## License
 
