@@ -21,9 +21,19 @@ async def stream_movie(movie_id: str):
     
     file_size = file_path.stat().st_size
     
+    # Detect MIME type based on file extension
+    mime_types = {
+        '.mp4': 'video/mp4',
+        '.mkv': 'video/x-matroska',
+        '.avi': 'video/x-msvideo',
+        '.mov': 'video/quicktime',
+        '.webm': 'video/webm'
+    }
+    media_type = mime_types.get(file_path.suffix.lower(), 'video/mp4')
+    
     return StreamingResponse(
         streaming_service.stream_file(str(file_path)),
-        media_type="video/mp4",
+        media_type=media_type,
         headers={
             "Accept-Ranges": "bytes",
             "Content-Length": str(file_size),
@@ -44,9 +54,19 @@ async def stream_episode(episode_id: str):
     
     file_size = file_path.stat().st_size
     
+    # Detect MIME type based on file extension
+    mime_types = {
+        '.mp4': 'video/mp4',
+        '.mkv': 'video/x-matroska',
+        '.avi': 'video/x-msvideo',
+        '.mov': 'video/quicktime',
+        '.webm': 'video/webm'
+    }
+    media_type = mime_types.get(file_path.suffix.lower(), 'video/mp4')
+    
     return StreamingResponse(
         streaming_service.stream_file(str(file_path)),
-        media_type="video/mp4",
+        media_type=media_type,
         headers={
             "Accept-Ranges": "bytes",
             "Content-Length": str(file_size),
