@@ -37,7 +37,7 @@ export class Player {
         this.currentTitle.textContent = movie.title;
         this.currentMeta.textContent = movie.year || '';
         
-        // Set video source
+        // Set video source - FIXED: Use getMovieStreamURL instead of getStreamURL
         const streamURL = this.api.getMovieStreamURL(movie.id);
         this.videoPlayer.src = streamURL;
         
