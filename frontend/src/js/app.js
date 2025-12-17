@@ -1,6 +1,6 @@
 import { API } from './modules/api.js';
 import { MovieList } from './modules/movieList.js';
-import { SeriesList } from './seriesList.js';
+import { SeriesList } from './modules/seriesList.js';
 import { Episodes } from './modules/episodes.js';
 import { Search } from './modules/search.js';
 import { Player } from './modules/player.js';
