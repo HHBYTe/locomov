@@ -20,9 +20,35 @@ export class Player {
                 this.onBackCallback();
             }
         });
+        
+        // Add error listener to video player
+        this.videoPlayer.addEventListener('error', (e) => {
+            console.error('Video player error event:', e);
+            console.error('Video error details:', {
+                error: this.videoPlayer.error,
+                code: this.videoPlayer.error?.code,
+                message: this.videoPlayer.error?.message,
+                currentSrc: this.videoPlayer.currentSrc,
+                networkState: this.videoPlayer.networkState,
+                readyState: this.videoPlayer.readyState
+            });
+        });
+        
+        this.videoPlayer.addEventListener('loadstart', () => {
+            console.log('Video load started');
+        });
+        
+        this.videoPlayer.addEventListener('loadedmetadata', () => {
+            console.log('Video metadata loaded');
+        });
+        
+        this.videoPlayer.addEventListener('canplay', () => {
+            console.log('Video can play');
+        });
     }
     
     playMovie(movie) {
+        console.log('playMovie called with:', movie);
         this.currentType = 'movie';
         
         // Hide other sections
@@ -37,8 +63,16 @@ export class Player {
         this.currentTitle.textContent = movie.title;
         this.currentMeta.textContent = movie.year || '';
         
-        // Set video source - FIXED: Use getMovieStreamURL instead of getStreamURL
+        // Set video source
         const streamURL = this.api.getMovieStreamURL(movie.id);
+        console.log('Stream URL:', streamURL);
+        console.log('Full URL will be:', window.location.origin + streamURL);
+        
+        // Clear existing source
+        this.videoPlayer.src = '';
+        this.videoPlayer.load();
+        
+        // Set new source
         this.videoPlayer.src = streamURL;
         
         // Clear existing subtitles
@@ -46,20 +80,52 @@ export class Player {
         
         // Add subtitles if available
         if (movie.subtitles && movie.subtitles.length > 0) {
+            console.log('Adding subtitles:', movie.subtitles);
             this.addSubtitles(movie.subtitles, 'movie', movie.id);
         }
         
+        // Test if URL is accessible
+        fetch(streamURL, { method: 'HEAD' })
+            .then(response => {
+                console.log('Stream URL HEAD check:', {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: [...response.headers.entries()],
+                    url: response.url
+                });
+                
+                if (!response.ok) {
+                    console.error('Stream URL not accessible:', response.status);
+                }
+            })
+            .catch(error => {
+                console.error('Error checking stream URL:', error);
+            });
+        
         // Play video
         this.videoPlayer.load();
-        this.videoPlayer.play().catch(error => {
-            console.error('Error playing video:', error);
-        });
+        console.log('Calling play()...');
+        this.videoPlayer.play()
+            .then(() => {
+                console.log('Video playing successfully');
+            })
+            .catch(error => {
+                console.error('Error playing video:', error);
+                console.error('Video element state:', {
+                    src: this.videoPlayer.src,
+                    currentSrc: this.videoPlayer.currentSrc,
+                    networkState: this.videoPlayer.networkState,
+                    readyState: this.videoPlayer.readyState,
+                    error: this.videoPlayer.error
+                });
+            });
         
         // Scroll to top
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
     
     playEpisode(episode, series) {
+        console.log('playEpisode called with:', episode, series);
         this.currentType = 'episode';
         
         // Hide other sections
@@ -77,6 +143,13 @@ export class Player {
         
         // Set video source
         const streamURL = this.api.getEpisodeStreamURL(episode.id);
+        console.log('Episode stream URL:', streamURL);
+        
+        // Clear existing source
+        this.videoPlayer.src = '';
+        this.videoPlayer.load();
+        
+        // Set new source
         this.videoPlayer.src = streamURL;
         
         // Clear existing subtitles
