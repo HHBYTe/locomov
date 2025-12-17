@@ -7,18 +7,8 @@ A modular, Docker-based streaming platform supporting both movies and TV series 
 - 🎬 Movies and 📺 Series support
 - 📄 Subtitle support (SRT, VTT, ASS, SSA)
 - 🔍 Search functionality
-- 📱 Responsive design
 - 🎯 Season and episode organization
 - 🐳 Docker containerization
-
-## Quick Start
-
-1. **Organize your media files** (see structure below)
-2. **Build and start containers:**
-   ```bash
-   docker-compose up -d
-   ```
-3. **Access the platform at** `http://localhost`
 
 ## Media Folder Structure
 
@@ -91,10 +81,6 @@ Edit `docker-compose.yml` to change:
 
 ## Development
 
-### Prerequisites
-- Docker & Docker Compose
-- Your media files organized as described above
-
 ### Project Structure
 ```
 ├── frontend/          # HTML, CSS, JS
@@ -105,34 +91,7 @@ Edit `docker-compose.yml` to change:
 └── docker-compose.yml
 ```
 
-### Stopping the Application
-```bash
-docker-compose down
-```
-
 ### View Logs
 ```bash
 docker-compose logs -f
 ```
-
-## API Documentation
-
-Once running, access the API docs at:
-- Swagger UI: `http://localhost:8000/docs`
-- ReDoc: `http://localhost:8000/redoc`
-
-## Troubleshooting
-
-**Movies/Series not showing up?**
-- Check folder structure matches examples above
-- Ensure video files have supported extensions
-- Check docker logs: `docker-compose logs backend`
-
-**Subtitles not loading?**
-- Ensure subtitle files are in the same folder as video
-- Check subtitle language codes in filename
-- VTT format works best for web playback
-
-## License
-
-MIT
