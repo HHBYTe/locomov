@@ -14,15 +14,21 @@ class MovieService:
         movies = []
         
         if not self.movies_path.exists():
+            print(f"Movies path does not exist: {self.movies_path}")
             return movies
+        
+        print(f"Scanning movies in: {self.movies_path}")
         
         # Each movie is in its own folder
         for movie_folder in self.movies_path.iterdir():
             if movie_folder.is_dir():
+                print(f"Checking folder: {movie_folder}")
                 movie = self._create_movie_from_folder(movie_folder)
                 if movie:
                     movies.append(movie)
+                    print(f"Added movie: {movie.title}")
         
+        print(f"Found {len(movies)} movies")
         # Sort alphabetically by title
         movies.sort(key=lambda x: x.title.lower())
         return movies
@@ -38,6 +44,7 @@ class MovieService:
                     break
             
             if not video_file:
+                print(f"No video file found in {folder_path}")
                 return None
             
             # Parse title and year from folder name
@@ -127,7 +134,9 @@ class MovieService:
         movies = self.scan_movies()
         for movie in movies:
             if movie.id == movie_id:
+                print(f"Found movie {movie_id}: {movie.file_path}")
                 return movie
+        print(f"Movie {movie_id} not found. Available movies: {[m.id for m in movies]}")
         return None
     
     def search_movies(self, query: str) -> List[Movie]:
