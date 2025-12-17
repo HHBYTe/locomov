@@ -10,29 +10,43 @@ export class MovieList {
         this.movieCount = document.getElementById('moviesCount');
         this.moviesSection = document.getElementById('moviesSection');
         
+        // Check if all elements exist
+        if (!this.container || !this.loadingSpinner || !this.errorMessage) {
+            console.error('MovieList: Required DOM elements not found', {
+                container: !!this.container,
+                loadingSpinner: !!this.loadingSpinner,
+                errorMessage: !!this.errorMessage,
+                sectionTitle: !!this.sectionTitle,
+                movieCount: !!this.movieCount,
+                moviesSection: !!this.moviesSection
+            });
+        }
+        
         this.onMovieSelectCallback = null;
     }
     
     async loadMovies() {
         this.showLoading();
-        this.sectionTitle.textContent = 'All Movies';
+        if (this.sectionTitle) this.sectionTitle.textContent = 'All Movies';
         
         try {
             const data = await this.api.getMovies();
             this.renderMovies(data.movies, data.total);
         } catch (error) {
+            console.error('Error loading movies:', error);
             this.showError();
         }
     }
     
     async searchMovies(query) {
         this.showLoading();
-        this.sectionTitle.textContent = `Search Results for "${query}"`;
+        if (this.sectionTitle) this.sectionTitle.textContent = `Search Results for "${query}"`;
         
         try {
             const data = await this.api.searchMovies(query);
             this.renderMovies(data.movies, data.total);
         } catch (error) {
+            console.error('Error searching movies:', error);
             this.showError();
         }
     }
@@ -40,9 +54,11 @@ export class MovieList {
     renderMovies(movies, total) {
         this.hideLoading();
         this.hideError();
-        this.container.innerHTML = '';
+        if (this.container) this.container.innerHTML = '';
         
-        this.movieCount.textContent = `${total} movie${total !== 1 ? 's' : ''}`;
+        if (this.movieCount) {
+            this.movieCount.textContent = `${total} movie${total !== 1 ? 's' : ''}`;
+        }
         
         if (movies.length === 0) {
             this.showEmptyState();
@@ -51,7 +67,7 @@ export class MovieList {
         
         movies.forEach(movie => {
             const card = this.createMovieCard(movie);
-            this.container.appendChild(card);
+            if (this.container) this.container.appendChild(card);
         });
     }
     
@@ -86,6 +102,8 @@ export class MovieList {
     }
     
     showEmptyState() {
+        if (!this.container) return;
+        
         this.container.innerHTML = `
             <div class="empty-state">
                 <div class="empty-state-icon">🔍</div>
@@ -96,32 +114,32 @@ export class MovieList {
     }
     
     showLoading() {
-        this.loadingSpinner.style.display = 'flex';
-        this.container.style.display = 'none';
-        this.errorMessage.style.display = 'none';
+        if (this.loadingSpinner) this.loadingSpinner.style.display = 'flex';
+        if (this.container) this.container.style.display = 'none';
+        if (this.errorMessage) this.errorMessage.style.display = 'none';
     }
     
     hideLoading() {
-        this.loadingSpinner.style.display = 'none';
-        this.container.style.display = 'grid';
+        if (this.loadingSpinner) this.loadingSpinner.style.display = 'none';
+        if (this.container) this.container.style.display = 'grid';
     }
     
     showError() {
-        this.loadingSpinner.style.display = 'none';
-        this.container.style.display = 'none';
-        this.errorMessage.style.display = 'block';
+        if (this.loadingSpinner) this.loadingSpinner.style.display = 'none';
+        if (this.container) this.container.style.display = 'none';
+        if (this.errorMessage) this.errorMessage.style.display = 'block';
     }
     
     hideError() {
-        this.errorMessage.style.display = 'none';
+        if (this.errorMessage) this.errorMessage.style.display = 'none';
     }
     
     show() {
-        this.moviesSection.style.display = 'block';
+        if (this.moviesSection) this.moviesSection.style.display = 'block';
     }
     
     hide() {
-        this.moviesSection.style.display = 'none';
+        if (this.moviesSection) this.moviesSection.style.display = 'none';
     }
     
     onMovieSelect(callback) {
