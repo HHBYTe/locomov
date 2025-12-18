@@ -47,33 +47,57 @@
     font-size: 1.1rem;
 }
 
-/* Video controls styling - Remove grey filter */
+/* Remove ALL video control overlays and gradients */
+
+/* WebKit/Chrome/Safari - Remove gradient scrim */
 video::-webkit-media-controls-enclosure {
-    background: transparent;
+    background: transparent !important;
+    background-image: none !important;
+    filter: none !important;
 }
 
 video::-webkit-media-controls-panel {
-    background-color: rgba(20, 20, 20, 0.95);
-    background-image: none;
+    background-color: rgba(20, 20, 20, 0.95) !important;
+    background-image: none !important;
 }
 
-video::-webkit-media-controls-play-button,
-video::-webkit-media-controls-volume-slider {
-    filter: brightness(1.2);
-}
-
-/* Remove any overlay/scrim from controls */
 video::-webkit-media-controls {
-    filter: none;
+    filter: none !important;
 }
 
 video::-webkit-media-controls-overlay-enclosure {
-    display: none;
+    display: none !important;
 }
 
-/* For Firefox */
+/* Remove the gradient overlay that appears over video */
+video::-webkit-media-text-track-container {
+    filter: none !important;
+}
+
+/* Firefox - Remove controls overlay */
 video::-moz-media-controls {
-    filter: none;
+    filter: none !important;
+}
+
+/* Additional fix for fullscreen gradient */
+video:fullscreen::-webkit-media-controls-enclosure,
+video:-webkit-full-screen::-webkit-media-controls-enclosure {
+    background: transparent !important;
+    background-image: none !important;
+}
+
+video:fullscreen::-webkit-media-controls-panel,
+video:-webkit-full-screen::-webkit-media-controls-panel {
+    background-color: rgba(20, 20, 20, 0.95) !important;
+    background-image: none !important;
+}
+
+/* Ensure video itself has no filters in fullscreen */
+video:fullscreen,
+video:-webkit-full-screen,
+video:-moz-full-screen,
+video:-ms-fullscreen {
+    filter: none !important;
 }
 
 /* Responsive */
