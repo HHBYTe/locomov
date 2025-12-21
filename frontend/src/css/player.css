@@ -7,6 +7,8 @@
     border: 2px solid var(--primary-color);
     overflow: hidden;
     margin-bottom: 2rem;
+    margin-left: 2rem;
+    margin-right: 2rem;
 }
 
 .video-player {
