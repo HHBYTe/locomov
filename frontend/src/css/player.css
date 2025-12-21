@@ -1,26 +1,15 @@
 .player-section {
-    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
 }
 
-.player-container {
-    background-color: #000;
-    border: 2px solid var(--primary-color);
-    overflow: hidden;
-    margin-bottom: 2rem;
-    margin-left: 2rem;
-    margin-right: 2rem;
-}
-
-.video-player {
-    width: 100%;
-    max-height: 70vh;
-    display: block;
-    background-color: #000;
-}
-
+/* Movie info at top */
 .movie-info {
-    padding: 1rem 0;
-    border-top: 1px solid var(--text-dim);
+    padding: 1rem 2rem;
+    border-bottom: 2px solid var(--text-dim);
+    text-align: left;
+    flex-shrink: 0;
 }
 
 .movie-info h2 {
@@ -32,6 +21,24 @@
 .movie-info p {
     color: var(--text-dim);
     font-size: 1.2rem;
+}
+
+.player-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #000;
+    margin: 0 2rem 2rem 2rem;
+    border: 2px solid var(--primary-color);
+    overflow: hidden;
+}
+
+.video-player {
+    width: 100%;
+    height: 100%;
+    display: block;
+    background-color: #000;
 }
 
 /* Video controls styling */
@@ -53,13 +60,23 @@ video::-webkit-media-controls-overlay-enclosure {
     display: none !important;
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive - Changed breakpoint to 1024px */
+@media (max-width: 1024px) {
     .video-player {
         max-height: 50vh;
     }
     
     .movie-info h2 {
         font-size: 1.5rem;
+    }
+    
+    .movie-info {
+        padding: 1rem;
+    }
+    
+    .player-container {
+        margin-left: 1rem;
+        margin-right: 1rem;
+        margin-bottom: 1rem;
     }
 }

@@ -92,8 +92,8 @@
     color: var(--background);
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive - Changed breakpoint to 1024px */
+@media (max-width: 1024px) {
     .episode-row {
         font-size: 1.1rem;
         padding: 0.5rem 1rem;
@@ -117,5 +117,9 @@
     .season-header {
         padding: 0.8rem 1rem;
         font-size: 1.2rem;
+    }
+    
+    .series-header {
+        padding: 1rem;
     }
 }

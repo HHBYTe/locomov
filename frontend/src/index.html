@@ -36,20 +36,23 @@
         <div class="container">
             <!-- Player Section (hidden by default) -->
             <section id="playerSection" class="player-section" style="display: none;">
-                <button id="backButton" class="back-button">ESC - BACK</button>
+                <!-- Movie info moved to top -->
+                <div class="movie-info">
+                    <h2 id="currentTitle"></h2>
+                    <p id="currentMeta"></p>
+                </div>
                 <div class="player-container">
                     <video id="videoPlayer" class="video-player" controls crossorigin="anonymous">
                         Your browser does not support the video tag.
                     </video>
                 </div>
-                <div class="movie-info">
-                    <h2 id="currentTitle"></h2>
-                    <p id="currentMeta"></p>
-                </div>
+                <!-- Back button hidden but still functional via ESC -->
+                <button id="backButton" class="back-button">ESC - BACK</button>
             </section>
 
             <!-- Series Episodes Section (hidden by default) -->
             <section id="episodesSection" class="episodes-section" style="display: none;">
+                <!-- Back button hidden but still functional via ESC -->
                 <button id="backToSeriesButton" class="back-button">ESC - BACK TO SERIES</button>
                 <div class="series-header">
                     <h2 id="seriesTitle"></h2>
