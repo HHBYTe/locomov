@@ -119,7 +119,7 @@ export class Episodes {
         if (index >= 0 && index < rows.length) {
             this.focusedIndex = index;
             rows[index].classList.add('focused');
-            rows[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            rows[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
     

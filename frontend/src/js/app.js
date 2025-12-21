@@ -152,6 +152,26 @@ class App {
                 return;
             }
             
+            // Handle left/right arrow keys to switch tabs (not in player view)
+            const playerSection = document.getElementById('playerSection');
+            const episodesSection = document.getElementById('episodesSection');
+            
+            if (playerSection.style.display === 'none') {
+                if (e.key === 'ArrowLeft') {
+                    e.preventDefault();
+                    if (this.currentView === 'series' || episodesSection.style.display !== 'none') {
+                        this.switchToMovies();
+                    }
+                    return;
+                } else if (e.key === 'ArrowRight') {
+                    e.preventDefault();
+                    if (this.currentView === 'movies') {
+                        this.switchToSeries();
+                    }
+                    return;
+                }
+            }
+            
             // Focus search input on any letter/number key
             if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
                 if (document.activeElement !== searchInput) {
@@ -161,11 +181,7 @@ class App {
                 return;
             }
             
-            // Arrow key navigation only when search is not focused
-            if (document.activeElement === searchInput) {
-                return;
-            }
-            
+            // Arrow key navigation - now works even when search is focused
             if (e.key === 'ArrowUp') {
                 e.preventDefault();
                 

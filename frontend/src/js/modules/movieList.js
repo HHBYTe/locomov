@@ -17,8 +17,7 @@ export class MovieList {
     
     async loadMovies() {
         this.showLoading();
-        this.sectionTitle.innerHTML = 'MOVIES<span id="moviesCount" class="item-count"></span>';
-        this.movieCount = document.getElementById('moviesCount');
+        this.updateSectionHeader('MOVIES', '');
         
         try {
             const data = await this.api.getMovies();
@@ -31,8 +30,7 @@ export class MovieList {
     
     async searchMovies(query) {
         this.showLoading();
-        this.sectionTitle.innerHTML = `SEARCH: "${query.toUpperCase()}"<span id="moviesCount" class="item-count"></span>`;
-        this.movieCount = document.getElementById('moviesCount');
+        this.updateSectionHeader(`SEARCH: "${query.toUpperCase()}"`, '');
         
         try {
             const data = await this.api.searchMovies(query);
@@ -41,6 +39,21 @@ export class MovieList {
             console.error('Error searching movies:', error);
             this.showError();
         }
+    }
+    
+    updateSectionHeader(title, count) {
+        const sectionHeader = document.querySelector('#moviesSection .section-header');
+        sectionHeader.innerHTML = `
+            <div class="section-header-title">
+                <h2>${title}<span id="moviesCount" class="item-count">${count}</span></h2>
+            </div>
+            <div class="section-header-columns">
+                <div class="column-label-title">TITLE</div>
+                <div class="column-label-year">YEAR</div>
+                <div class="column-label-meta">LENGTH</div>
+            </div>
+        `;
+        this.movieCount = document.getElementById('moviesCount');
     }
     
     renderMovies(movies, total) {
@@ -108,7 +121,7 @@ export class MovieList {
         if (index >= 0 && index < rows.length) {
             this.focusedIndex = index;
             rows[index].classList.add('focused');
-            rows[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            rows[index].scrollIntoView({ behavior: 'smooth', block: 'center' });
         }
     }
     

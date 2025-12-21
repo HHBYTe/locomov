@@ -23,6 +23,7 @@ body {
     display: flex;
     flex-direction: column;
     font-size: 20px;
+    cursor: crosshair;
 }
 
 .container {
@@ -36,7 +37,7 @@ body {
 .header {
     background-color: var(--background);
     padding: 1rem 2rem;
-    border-bottom: 2px solid var(--primary-color);
+    border-bottom: 2px solid var(--secondary-color);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -51,7 +52,8 @@ body {
 .logo {
     font-size: 2rem;
     font-weight: normal;
-    color: var(--primary-color);
+    color: var(--secondary-color);
+    text-shadow: 0 0 10px var(--secondary-color);
 }
 
 /* Navigation Tabs */
@@ -74,12 +76,14 @@ body {
 .nav-tab:hover {
     border-color: var(--secondary-color);
     color: var(--secondary-color);
+    box-shadow: 0 0 8px var(--secondary-color);
 }
 
 .nav-tab.active {
-    background-color: var(--primary-color);
+    background-color: var(--secondary-color);
     color: var(--background);
-    border-color: var(--primary-color);
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 15px var(--secondary-color);
 }
 
 /* Search Bar */
@@ -101,6 +105,10 @@ body {
     outline: none;
 }
 
+.search-input:focus {
+    border-bottom-color: var(--secondary-color);
+}
+
 .search-input::placeholder {
     color: var(--text-dim);
 }
@@ -113,8 +121,14 @@ body {
 
 /* Section Header */
 .section-header {
-    padding: 1rem 2rem;
+    padding: 0;
     border-bottom: 1px solid var(--text-dim);
+    display: flex;
+    flex-direction: column;
+}
+
+.section-header-title {
+    padding: 1rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -125,8 +139,33 @@ body {
     font-weight: normal;
 }
 
-.item-count {
+.section-header-columns {
+    padding: 0.5rem 2rem;
+    display: flex;
+    gap: 2rem;
+    align-items: center;
     color: var(--text-dim);
+    font-size: 1rem;
+    border-top: 1px solid var(--text-dim);
+}
+
+.column-label-title {
+    flex: 1;
+    min-width: 0;
+}
+
+.column-label-year {
+    min-width: 100px;
+    text-align: center;
+}
+
+.column-label-meta {
+    min-width: 120px;
+    text-align: right;
+}
+
+.item-count {
+    color: var(--secondary-color);
     font-size: 1.2rem;
 }
 
@@ -140,7 +179,7 @@ body {
 }
 
 .spinner {
-    color: var(--primary-color);
+    color: var(--secondary-color);
     font-size: 2rem;
     animation: blink 1s infinite;
 }
@@ -175,6 +214,7 @@ body {
     background-color: var(--secondary-color);
     color: var(--background);
     border-color: var(--secondary-color);
+    box-shadow: 0 0 10px var(--secondary-color);
 }
 
 /* Responsive */
