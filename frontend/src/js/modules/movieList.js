@@ -10,24 +10,15 @@ export class MovieList {
         this.movieCount = document.getElementById('moviesCount');
         this.moviesSection = document.getElementById('moviesSection');
         
-        // Check if all elements exist
-        if (!this.container || !this.loadingSpinner || !this.errorMessage) {
-            console.error('MovieList: Required DOM elements not found', {
-                container: !!this.container,
-                loadingSpinner: !!this.loadingSpinner,
-                errorMessage: !!this.errorMessage,
-                sectionTitle: !!this.sectionTitle,
-                movieCount: !!this.movieCount,
-                moviesSection: !!this.moviesSection
-            });
-        }
-        
         this.onMovieSelectCallback = null;
+        this.movies = [];
+        this.focusedIndex = -1;
     }
     
     async loadMovies() {
         this.showLoading();
-        if (this.sectionTitle) this.sectionTitle.textContent = 'All Movies';
+        this.sectionTitle.innerHTML = 'MOVIES<span id="moviesCount" class="item-count"></span>';
+        this.movieCount = document.getElementById('moviesCount');
         
         try {
             const data = await this.api.getMovies();
@@ -40,7 +31,8 @@ export class MovieList {
     
     async searchMovies(query) {
         this.showLoading();
-        if (this.sectionTitle) this.sectionTitle.textContent = `Search Results for "${query}"`;
+        this.sectionTitle.innerHTML = `SEARCH: "${query.toUpperCase()}"<span id="moviesCount" class="item-count"></span>`;
+        this.movieCount = document.getElementById('moviesCount');
         
         try {
             const data = await this.api.searchMovies(query);
@@ -54,10 +46,12 @@ export class MovieList {
     renderMovies(movies, total) {
         this.hideLoading();
         this.hideError();
-        if (this.container) this.container.innerHTML = '';
+        this.container.innerHTML = '';
+        this.movies = movies;
+        this.focusedIndex = -1;
         
         if (this.movieCount) {
-            this.movieCount.textContent = `${total} movie${total !== 1 ? 's' : ''}`;
+            this.movieCount.textContent = ` [${total}]`;
         }
         
         if (movies.length === 0) {
@@ -65,50 +59,86 @@ export class MovieList {
             return;
         }
         
-        movies.forEach(movie => {
-            const card = this.createMovieCard(movie);
-            if (this.container) this.container.appendChild(card);
+        movies.forEach((movie, index) => {
+            const row = this.createMovieRow(movie, index);
+            this.container.appendChild(row);
         });
     }
     
-    createMovieCard(movie) {
-        const card = createElement('div', { className: 'item-card' });
+    createMovieRow(movie, index) {
+        const row = createElement('div', { className: 'item-row' });
+        row.dataset.index = index;
         
-        const subtitleIndicator = movie.subtitles && movie.subtitles.length > 0 
-            ? `<div class="item-meta"><span>📄 ${movie.subtitles.length} subtitle${movie.subtitles.length !== 1 ? 's' : ''}</span></div>`
-            : '';
+        const info = createElement('div', { className: 'item-info' });
         
-        card.innerHTML = `
-            <div class="item-thumbnail">
-                🎬
-                <div class="item-overlay">
-                    <span class="play-icon">▶</span>
-                </div>
-            </div>
-            <div class="item-details">
-                <h3 class="item-title">${this.escapeHtml(movie.title)}</h3>
-                ${movie.year ? `<p class="item-year">${movie.year}</p>` : ''}
-                ${subtitleIndicator}
-            </div>
-        `;
+        const title = createElement('div', { className: 'item-title' });
+        title.textContent = movie.title.toUpperCase();
+        info.appendChild(title);
         
-        card.addEventListener('click', () => {
+        if (movie.year) {
+            const year = createElement('div', { className: 'item-year' });
+            year.textContent = movie.year;
+            info.appendChild(year);
+        }
+        
+        if (movie.length) {
+            const length = createElement('div', { className: 'item-length' });
+            length.textContent = movie.length;
+            info.appendChild(length);
+        }
+        
+        row.appendChild(info);
+        
+        row.addEventListener('click', () => {
             if (this.onMovieSelectCallback) {
                 this.onMovieSelectCallback(movie);
             }
         });
         
-        return card;
+        return row;
+    }
+    
+    focusItem(index) {
+        const rows = this.container.querySelectorAll('.item-row');
+        
+        // Remove previous focus
+        rows.forEach(row => row.classList.remove('focused'));
+        
+        // Add new focus
+        if (index >= 0 && index < rows.length) {
+            this.focusedIndex = index;
+            rows[index].classList.add('focused');
+            rows[index].scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    }
+    
+    selectFocusedItem() {
+        if (this.focusedIndex >= 0 && this.focusedIndex < this.movies.length) {
+            if (this.onMovieSelectCallback) {
+                this.onMovieSelectCallback(this.movies[this.focusedIndex]);
+            }
+        }
+    }
+    
+    moveFocusUp() {
+        if (this.focusedIndex > 0) {
+            this.focusItem(this.focusedIndex - 1);
+        }
+    }
+    
+    moveFocusDown() {
+        if (this.focusedIndex < this.movies.length - 1) {
+            this.focusItem(this.focusedIndex + 1);
+        } else if (this.focusedIndex === -1 && this.movies.length > 0) {
+            this.focusItem(0);
+        }
     }
     
     showEmptyState() {
-        if (!this.container) return;
-        
         this.container.innerHTML = `
             <div class="empty-state">
-                <div class="empty-state-icon">🔍</div>
-                <h3>No movies found</h3>
-                <p>Try a different search term</p>
+                <div class="empty-state-icon">[X]</div>
+                <h3>NO MOVIES FOUND</h3>
             </div>
         `;
     }
@@ -121,7 +151,7 @@ export class MovieList {
     
     hideLoading() {
         if (this.loadingSpinner) this.loadingSpinner.style.display = 'none';
-        if (this.container) this.container.style.display = 'grid';
+        if (this.container) this.container.style.display = 'flex';
     }
     
     showError() {
@@ -144,11 +174,5 @@ export class MovieList {
     
     onMovieSelect(callback) {
         this.onMovieSelectCallback = callback;
-    }
-    
-    escapeHtml(text) {
-        const div = document.createElement('div');
-        div.textContent = text;
-        return div.innerHTML;
     }
 }

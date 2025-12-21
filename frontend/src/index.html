@@ -3,36 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Movie & Series Streaming Platform</title>
+    <title>STREAM.TERM</title>
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/movies.css">
     <link rel="stylesheet" href="css/series.css">
     <link rel="stylesheet" href="css/player.css">
 </head>
 <body>
+    <!-- Header with title and tabs -->
     <header class="header">
         <div class="container">
-            <h1 class="logo">🎬 Streaming Platform</h1>
+            <h1 class="logo">LOCOMOV</h1>
             <nav class="nav-tabs">
-                <button id="moviesTab" class="nav-tab active">Movies</button>
-                <button id="seriesTab" class="nav-tab">Series</button>
+                <button id="moviesTab" class="nav-tab active">MOVIES</button>
+                <button id="seriesTab" class="nav-tab">SERIES</button>
             </nav>
-            <div class="search-container">
-                <input 
-                    type="text" 
-                    id="searchInput" 
-                    class="search-input" 
-                    placeholder="Search..."
-                >
-            </div>
         </div>
     </header>
+
+    <!-- Full width search bar -->
+    <div class="search-bar">
+        <input 
+            type="text" 
+            id="searchInput" 
+            class="search-input" 
+            placeholder="search..."
+            autocomplete="off"
+        >
+    </div>
 
     <main class="main">
         <div class="container">
             <!-- Player Section (hidden by default) -->
             <section id="playerSection" class="player-section" style="display: none;">
-                <button id="backButton" class="back-button">← Back</button>
+                <button id="backButton" class="back-button">ESC - BACK</button>
                 <div class="player-container">
                     <video id="videoPlayer" class="video-player" controls crossorigin="anonymous">
                         Your browser does not support the video tag.
@@ -46,7 +50,7 @@
 
             <!-- Series Episodes Section (hidden by default) -->
             <section id="episodesSection" class="episodes-section" style="display: none;">
-                <button id="backToSeriesButton" class="back-button">← Back to Series</button>
+                <button id="backToSeriesButton" class="back-button">ESC - BACK TO SERIES</button>
                 <div class="series-header">
                     <h2 id="seriesTitle"></h2>
                     <p id="seriesYear"></p>
@@ -57,39 +61,39 @@
             <!-- Movies List Section -->
             <section id="moviesSection" class="content-section">
                 <div class="section-header">
-                    <h2 id="moviesSectionTitle">All Movies</h2>
+                    <h2 id="moviesSectionTitle">MOVIES</h2>
                     <span id="moviesCount" class="item-count"></span>
                 </div>
                 
                 <div id="moviesLoadingSpinner" class="loading-spinner">
-                    <div class="spinner"></div>
-                    <p>Loading movies...</p>
+                    <div class="spinner">█</div>
+                    <p>LOADING...</p>
                 </div>
 
                 <div id="moviesErrorMessage" class="error-message" style="display: none;">
-                    <p>Failed to load movies. Please try again.</p>
+                    <p>ERROR: FAILED TO LOAD MOVIES</p>
                 </div>
 
-                <div id="moviesList" class="items-grid"></div>
+                <div id="moviesList" class="items-list"></div>
             </section>
 
             <!-- Series List Section -->
             <section id="seriesSection" class="content-section" style="display: none;">
                 <div class="section-header">
-                    <h2 id="seriesSectionTitle">All Series</h2>
+                    <h2 id="seriesSectionTitle">SERIES</h2>
                     <span id="seriesCount" class="item-count"></span>
                 </div>
                 
                 <div id="seriesLoadingSpinner" class="loading-spinner">
-                    <div class="spinner"></div>
-                    <p>Loading series...</p>
+                    <div class="spinner">█</div>
+                    <p>LOADING...</p>
                 </div>
 
                 <div id="seriesErrorMessage" class="error-message" style="display: none;">
-                    <p>Failed to load series. Please try again.</p>
+                    <p>ERROR: FAILED TO LOAD SERIES</p>
                 </div>
 
-                <div id="seriesList" class="items-grid"></div>
+                <div id="seriesList" class="items-list"></div>
             </section>
         </div>
     </main>

@@ -9,7 +9,6 @@ class App {
     constructor() {
         console.log('App constructor started');
         
-        // Verify all required DOM elements exist
         this.verifyDOMElements();
         
         this.api = new API();
@@ -19,7 +18,7 @@ class App {
         this.search = new Search(this.api);
         this.player = new Player(this.api);
         
-        this.currentView = 'movies'; // 'movies' or 'series'
+        this.currentView = 'movies';
         
         console.log('App initialization complete, starting init()');
         this.init();
@@ -42,25 +41,21 @@ class App {
         
         if (missing.length > 0) {
             console.error('Missing DOM elements:', missing);
-            alert('ERROR: Page not fully loaded. Missing elements: ' + missing.join(', '));
         } else {
             console.log('All required DOM elements found');
         }
     }
     
     init() {
-        console.log('Starting init() - setting up tabs');
+        console.log('Starting init()');
         
-        // Setup tabs
         this.setupTabs();
+        this.setupKeyboardNavigation();
         
-        console.log('Loading movies...');
-        // Load all movies on startup
         this.movieList.loadMovies();
         
-        // Setup search - works for both movies and series based on current view
         this.search.onSearch((query) => {
-            console.log('Search triggered:', query, 'Current view:', this.currentView);
+            console.log('Search triggered:', query);
             
             if (this.currentView === 'movies') {
                 if (query.trim()) {
@@ -77,31 +72,26 @@ class App {
             }
         });
         
-        // Setup movie selection
         this.movieList.onMovieSelect((movie) => {
             console.log('Movie selected:', movie);
             this.player.playMovie(movie);
         });
         
-        // Setup series selection
         this.seriesList.onSeriesSelect((series) => {
             console.log('Series selected:', series);
             this.episodes.showEpisodes(series);
         });
         
-        // Setup episode selection
         this.episodes.onEpisodeSelect((episode, series) => {
             console.log('Episode selected:', episode);
             this.player.playEpisode(episode, series);
         });
         
-        // Setup back buttons
         this.player.onBack(() => {
             console.log('Player back button clicked');
             if (this.currentView === 'movies') {
                 this.showMovies();
             } else if (this.episodes.getCurrentSeries()) {
-                // If we were watching a series episode, go back to episodes view
                 const series = this.episodes.getCurrentSeries();
                 this.episodes.showEpisodes(series);
             } else {
@@ -137,21 +127,90 @@ class App {
         });
     }
     
+    setupKeyboardNavigation() {
+        const searchInput = document.getElementById('searchInput');
+        
+        document.addEventListener('keydown', (e) => {
+            // Don't handle if video player is focused
+            if (document.activeElement.tagName === 'VIDEO') {
+                return;
+            }
+            
+            // Handle ESC
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                
+                const playerSection = document.getElementById('playerSection');
+                const episodesSection = document.getElementById('episodesSection');
+                
+                if (playerSection.style.display !== 'none') {
+                    document.getElementById('backButton').click();
+                } else if (episodesSection.style.display !== 'none') {
+                    document.getElementById('backToSeriesButton').click();
+                }
+                
+                return;
+            }
+            
+            // Focus search input on any letter/number key
+            if (e.key.length === 1 && !e.ctrlKey && !e.metaKey && !e.altKey) {
+                if (document.activeElement !== searchInput) {
+                    searchInput.focus();
+                    // Let the character be typed
+                }
+                return;
+            }
+            
+            // Arrow key navigation only when search is not focused
+            if (document.activeElement === searchInput) {
+                return;
+            }
+            
+            if (e.key === 'ArrowUp') {
+                e.preventDefault();
+                
+                if (this.currentView === 'movies' && document.getElementById('moviesSection').style.display !== 'none') {
+                    this.movieList.moveFocusUp();
+                } else if (this.currentView === 'series' && document.getElementById('seriesSection').style.display !== 'none') {
+                    this.seriesList.moveFocusUp();
+                } else if (document.getElementById('episodesSection').style.display !== 'none') {
+                    this.episodes.moveFocusUp();
+                }
+            } else if (e.key === 'ArrowDown') {
+                e.preventDefault();
+                
+                if (this.currentView === 'movies' && document.getElementById('moviesSection').style.display !== 'none') {
+                    this.movieList.moveFocusDown();
+                } else if (this.currentView === 'series' && document.getElementById('seriesSection').style.display !== 'none') {
+                    this.seriesList.moveFocusDown();
+                } else if (document.getElementById('episodesSection').style.display !== 'none') {
+                    this.episodes.moveFocusDown();
+                }
+            } else if (e.key === 'Enter') {
+                e.preventDefault();
+                
+                if (this.currentView === 'movies' && document.getElementById('moviesSection').style.display !== 'none') {
+                    this.movieList.selectFocusedItem();
+                } else if (this.currentView === 'series' && document.getElementById('seriesSection').style.display !== 'none') {
+                    this.seriesList.selectFocusedItem();
+                } else if (document.getElementById('episodesSection').style.display !== 'none') {
+                    this.episodes.selectFocusedItem();
+                }
+            }
+        });
+    }
+    
     switchToMovies() {
         console.log('Switching to movies view');
         this.currentView = 'movies';
         
-        // Update tab active state
         document.getElementById('moviesTab').classList.add('active');
         document.getElementById('seriesTab').classList.remove('active');
         
-        // Clear search
         this.search.clear();
         
-        // Show movies view
         this.showMovies();
         
-        // Load movies if not already loaded
         this.movieList.loadMovies();
     }
     
@@ -159,17 +218,13 @@ class App {
         console.log('Switching to series view');
         this.currentView = 'series';
         
-        // Update tab active state
         document.getElementById('seriesTab').classList.add('active');
         document.getElementById('moviesTab').classList.remove('active');
         
-        // Clear search
         this.search.clear();
         
-        // Show series view
         this.showSeries();
         
-        // Load series if not already loaded
         this.seriesList.loadSeries();
     }
     
@@ -190,7 +245,6 @@ class App {
     }
 }
 
-// Initialize app when DOM is ready
 if (document.readyState === 'loading') {
     console.log('Document still loading, waiting for DOMContentLoaded');
     document.addEventListener('DOMContentLoaded', () => {

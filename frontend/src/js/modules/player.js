@@ -1,112 +1,121 @@
-.player-section {
-    margin-bottom: 2rem;
-}
-
-.back-button {
-    background-color: rgba(255, 255, 255, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    color: var(--text-color);
-    padding: 0.75rem 1.5rem;
-    border-radius: var(--border-radius);
-    cursor: pointer;
-    font-size: 1rem;
-    transition: var(--transition);
-    margin-bottom: 1.5rem;
-}
-
-.back-button:hover {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.player-container {
-    background-color: #000;
-    border-radius: var(--border-radius);
-    overflow: hidden;
-    margin-bottom: 2rem;
-    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
-}
-
-.video-player {
-    width: 100%;
-    max-height: 70vh;
-    display: block;
-    background-color: #000;
-}
-
-.movie-info {
-    padding: 1rem 0;
-}
-
-.movie-info h2 {
-    font-size: 2rem;
-    margin-bottom: 0.5rem;
-}
-
-.movie-info p {
-    color: var(--text-secondary);
-    font-size: 1.1rem;
-}
-
-/* Remove ALL video control overlays and gradients */
-
-/* WebKit/Chrome/Safari - Remove gradient scrim */
-video::-webkit-media-controls-enclosure {
-    background: transparent !important;
-    background-image: none !important;
-    filter: none !important;
-}
-
-video::-webkit-media-controls-panel {
-    background-color: rgba(20, 20, 20, 0.95) !important;
-    background-image: none !important;
-}
-
-video::-webkit-media-controls {
-    filter: none !important;
-}
-
-video::-webkit-media-controls-overlay-enclosure {
-    display: none !important;
-}
-
-/* Remove the gradient overlay that appears over video */
-video::-webkit-media-text-track-container {
-    filter: none !important;
-}
-
-/* Firefox - Remove controls overlay */
-video::-moz-media-controls {
-    filter: none !important;
-}
-
-/* Additional fix for fullscreen gradient */
-video:fullscreen::-webkit-media-controls-enclosure,
-video:-webkit-full-screen::-webkit-media-controls-enclosure {
-    background: transparent !important;
-    background-image: none !important;
-}
-
-video:fullscreen::-webkit-media-controls-panel,
-video:-webkit-full-screen::-webkit-media-controls-panel {
-    background-color: rgba(20, 20, 20, 0.95) !important;
-    background-image: none !important;
-}
-
-/* Ensure video itself has no filters in fullscreen */
-video:fullscreen,
-video:-webkit-full-screen,
-video:-moz-full-screen,
-video:-ms-fullscreen {
-    filter: none !important;
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-    .video-player {
-        max-height: 50vh;
+export class Player {
+    constructor(api) {
+        this.api = api;
+        this.playerSection = document.getElementById('playerSection');
+        this.videoPlayer = document.getElementById('videoPlayer');
+        this.backButton = document.getElementById('backButton');
+        this.currentTitle = document.getElementById('currentTitle');
+        this.currentMeta = document.getElementById('currentMeta');
+        
+        this.onBackCallback = null;
+        
+        this.init();
     }
     
-    .movie-info h2 {
-        font-size: 1.5rem;
+    init() {
+        this.backButton.addEventListener('click', () => {
+            this.stop();
+            if (this.onBackCallback) {
+                this.onBackCallback();
+            }
+        });
+    }
+    
+    playMovie(movie) {
+        this.show();
+        
+        this.currentTitle.textContent = movie.title.toUpperCase();
+        this.currentMeta.textContent = movie.year ? `${movie.year} ${movie.length || ''}` : movie.length || '';
+        
+        const streamURL = this.api.getMovieStreamURL(movie.id);
+        this.videoPlayer.src = streamURL;
+        
+        // Clear existing subtitles
+        const existingTracks = this.videoPlayer.querySelectorAll('track');
+        existingTracks.forEach(track => track.remove());
+        
+        // Add subtitles
+        if (movie.subtitles && movie.subtitles.length > 0) {
+            movie.subtitles.forEach((subtitle, index) => {
+                const track = document.createElement('track');
+                track.kind = 'subtitles';
+                track.label = subtitle.language || `Subtitle ${index + 1}`;
+                track.srclang = subtitle.language_code || 'en';
+                track.src = this.api.getSubtitleURL('movie', movie.id, subtitle.filename);
+                
+                if (index === 0) {
+                    track.default = true;
+                }
+                
+                this.videoPlayer.appendChild(track);
+            });
+        }
+        
+        this.videoPlayer.load();
+        this.videoPlayer.play().catch(err => {
+            console.error('Error playing video:', err);
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    playEpisode(episode, series) {
+        this.show();
+        
+        const episodeTitle = episode.title ? ` - ${episode.title}` : '';
+        this.currentTitle.textContent = `${series.title.toUpperCase()} - S${episode.season}E${episode.episode}${episodeTitle}`;
+        this.currentMeta.textContent = series.year || '';
+        
+        const streamURL = this.api.getEpisodeStreamURL(episode.id);
+        this.videoPlayer.src = streamURL;
+        
+        // Clear existing subtitles
+        const existingTracks = this.videoPlayer.querySelectorAll('track');
+        existingTracks.forEach(track => track.remove());
+        
+        // Add subtitles
+        if (episode.subtitles && episode.subtitles.length > 0) {
+            episode.subtitles.forEach((subtitle, index) => {
+                const track = document.createElement('track');
+                track.kind = 'subtitles';
+                track.label = subtitle.language || `Subtitle ${index + 1}`;
+                track.srclang = subtitle.language_code || 'en';
+                track.src = this.api.getSubtitleURL('episode', episode.id, subtitle.filename);
+                
+                if (index === 0) {
+                    track.default = true;
+                }
+                
+                this.videoPlayer.appendChild(track);
+            });
+        }
+        
+        this.videoPlayer.load();
+        this.videoPlayer.play().catch(err => {
+            console.error('Error playing video:', err);
+        });
+        
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    
+    stop() {
+        this.videoPlayer.pause();
+        this.videoPlayer.src = '';
+        this.hide();
+    }
+    
+    show() {
+        document.getElementById('moviesSection').style.display = 'none';
+        document.getElementById('seriesSection').style.display = 'none';
+        document.getElementById('episodesSection').style.display = 'none';
+        this.playerSection.style.display = 'block';
+    }
+    
+    hide() {
+        this.playerSection.style.display = 'none';
+    }
+    
+    onBack(callback) {
+        this.onBackCallback = callback;
     }
 }
