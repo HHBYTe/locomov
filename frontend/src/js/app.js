@@ -117,14 +117,56 @@ class App {
         }
         
         moviesTab.addEventListener('click', () => {
-            console.log('Movies tab clicked');
-            this.switchToMovies();
+            console.log('Movies tab clicked - going home');
+            this.goHomeMovies();
         });
         
         seriesTab.addEventListener('click', () => {
-            console.log('Series tab clicked');
-            this.switchToSeries();
+            console.log('Series tab clicked - going home');
+            this.goHomeSeries();
         });
+    }
+    
+    goHomeMovies() {
+        // Stop player if playing
+        this.player.stop();
+        
+        // Switch to movies view
+        this.currentView = 'movies';
+        
+        // Update tabs
+        document.getElementById('moviesTab').classList.add('active');
+        document.getElementById('seriesTab').classList.remove('active');
+        
+        // Clear search
+        this.search.clear();
+        
+        // Show movies section
+        this.showMovies();
+        
+        // Reload movies from scratch
+        this.movieList.loadMovies();
+    }
+    
+    goHomeSeries() {
+        // Stop player if playing
+        this.player.stop();
+        
+        // Switch to series view
+        this.currentView = 'series';
+        
+        // Update tabs
+        document.getElementById('seriesTab').classList.add('active');
+        document.getElementById('moviesTab').classList.remove('active');
+        
+        // Clear search
+        this.search.clear();
+        
+        // Show series section
+        this.showSeries();
+        
+        // Reload series from scratch
+        this.seriesList.loadSeries();
     }
     
     setupKeyboardNavigation() {
@@ -160,13 +202,13 @@ class App {
                 if (e.key === 'ArrowLeft') {
                     e.preventDefault();
                     if (this.currentView === 'series' || episodesSection.style.display !== 'none') {
-                        this.switchToMovies();
+                        this.goHomeMovies();
                     }
                     return;
                 } else if (e.key === 'ArrowRight') {
                     e.preventDefault();
                     if (this.currentView === 'movies') {
-                        this.switchToSeries();
+                        this.goHomeSeries();
                     }
                     return;
                 }

@@ -6,6 +6,7 @@ export class Player {
         this.backButton = document.getElementById('backButton');
         this.currentTitle = document.getElementById('currentTitle');
         this.currentMeta = document.getElementById('currentMeta');
+        this.searchBar = document.querySelector('.search-bar');
         
         this.onBackCallback = null;
         
@@ -24,8 +25,14 @@ export class Player {
     playMovie(movie) {
         this.show();
         
+        // Hide search bar when playing
+        if (this.searchBar) {
+            this.searchBar.style.display = 'none';
+        }
+        
         this.currentTitle.textContent = movie.title.toUpperCase();
-        this.currentMeta.textContent = movie.year ? `${movie.year} ${movie.length || ''}` : movie.length || '';
+        // Only show year, no length
+        this.currentMeta.textContent = movie.year || '';
         
         const streamURL = this.api.getMovieStreamURL(movie.id);
         this.videoPlayer.src = streamURL;
@@ -61,6 +68,11 @@ export class Player {
     
     playEpisode(episode, series) {
         this.show();
+        
+        // Hide search bar when playing
+        if (this.searchBar) {
+            this.searchBar.style.display = 'none';
+        }
         
         const episodeTitle = episode.title ? ` - ${episode.title}` : '';
         this.currentTitle.textContent = `${series.title.toUpperCase()} - S${episode.season}E${episode.episode}${episodeTitle}`;
@@ -113,6 +125,10 @@ export class Player {
     
     hide() {
         this.playerSection.style.display = 'none';
+        // Show search bar when leaving player
+        if (this.searchBar) {
+            this.searchBar.style.display = 'block';
+        }
     }
     
     onBack(callback) {
