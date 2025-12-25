@@ -47,13 +47,9 @@
 }
 
 /* Video controls styling */
-video::-webkit-media-controls-enclosure {
-    background: transparent !important;
-    background-image: none !important;
-}
-
+video::-webkit-media-controls-enclosure,
 video::-webkit-media-controls-panel {
-    background-color: rgba(0, 0, 0, 0.95) !important;
+    background: transparent !important;
     background-image: none !important;
 }
 
