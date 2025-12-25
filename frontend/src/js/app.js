@@ -49,10 +49,34 @@ class App {
     init() {
         console.log('Starting init()');
         
+        // Check URL parameters to determine initial view
+        const urlParams = new URLSearchParams(window.location.search);
+        const viewParam = urlParams.get('view');
+        const searchParam = urlParams.get('search');
+        
+        if (viewParam === 'series') {
+            this.currentView = 'series';
+            this.switchToSeries();
+            
+            // If there's a search parameter, perform search
+            if (searchParam) {
+                this.search.setValue(searchParam);
+                this.seriesList.searchSeries(searchParam);
+            }
+        } else {
+            this.currentView = 'movies';
+            
+            // If there's a search parameter, perform search
+            if (searchParam) {
+                this.search.setValue(searchParam);
+                this.movieList.searchMovies(searchParam);
+            } else {
+                this.movieList.loadMovies();
+            }
+        }
+        
         this.setupTabs();
         this.setupKeyboardNavigation();
-        
-        this.movieList.loadMovies();
         
         this.search.onSearch((query) => {
             console.log('Search triggered:', query);
@@ -146,6 +170,9 @@ class App {
         
         // Reload movies from scratch
         this.movieList.loadMovies();
+        
+        // Update URL
+        window.history.pushState({}, '', '/app.html?view=movies');
     }
     
     goHomeSeries() {
@@ -167,6 +194,9 @@ class App {
         
         // Reload series from scratch
         this.seriesList.loadSeries();
+        
+        // Update URL
+        window.history.pushState({}, '', '/app.html?view=series');
     }
     
     setupKeyboardNavigation() {

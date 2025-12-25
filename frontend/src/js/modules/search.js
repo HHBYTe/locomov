@@ -28,6 +28,10 @@ export class Search {
         this.searchInput.value = '';
     }
     
+    setValue(value) {
+        this.searchInput.value = value;
+    }
+    
     onSearch(callback) {
         this.onSearchCallback = callback;
     }
