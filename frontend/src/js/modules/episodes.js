@@ -8,6 +8,7 @@ export class Episodes {
         this.seriesYear = document.getElementById('seriesYear');
         this.seasonsContainer = document.getElementById('seasonsContainer');
         this.backButton = document.getElementById('backToSeriesButton');
+        this.searchBar = document.querySelector('.search-bar');
         
         this.currentSeries = null;
         this.onEpisodeSelectCallback = null;
@@ -35,6 +36,11 @@ export class Episodes {
         document.getElementById('playerSection').style.display = 'none';
         
         this.episodesSection.style.display = 'block';
+        
+        // Hide search bar when viewing episodes
+        if (this.searchBar) {
+            this.searchBar.style.display = 'none';
+        }
         
         this.seriesTitle.textContent = series.title.toUpperCase();
         this.seriesYear.textContent = series.year || '';
@@ -151,6 +157,10 @@ export class Episodes {
     
     hide() {
         this.episodesSection.style.display = 'none';
+        // Show search bar when leaving episodes
+        if (this.searchBar) {
+            this.searchBar.style.display = 'block';
+        }
     }
     
     getCurrentSeries() {

@@ -76,7 +76,8 @@ export class Player {
         
         const episodeTitle = episode.title ? ` - ${episode.title}` : '';
         this.currentTitle.textContent = `${series.title.toUpperCase()} - S${episode.season}E${episode.episode}${episodeTitle}`;
-        this.currentMeta.textContent = series.year || '';
+        // Remove year from series player - leave meta empty
+        this.currentMeta.textContent = '';
         
         const streamURL = this.api.getEpisodeStreamURL(episode.id);
         this.videoPlayer.src = streamURL;

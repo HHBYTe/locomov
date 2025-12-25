@@ -92,8 +92,8 @@
     color: var(--background);
 }
 
-/* Responsive - Changed breakpoint to 1024px */
-@media (max-width: 1024px) {
+/* Responsive - Changed breakpoint to 500px to match main.css */
+@media (max-width: 500px) {
     .episode-row {
         font-size: 1.1rem;
         padding: 0.5rem 1rem;
